@@ -15,6 +15,7 @@ const App = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [location] = useState("Paris, France");
+  const [favorites, setFavorites] = useState([]);
 
   const loadPlaces = useCallback(async () => {
     setLoading(true);
@@ -58,13 +59,13 @@ const App = () => {
       </div>
 
       {/* Main UI Overlay */}
-      <main className="relative z-10 h-full flex flex-col justify-between items-center py-8 px-6 lg:px-12">
+      <main className="relative z-10 h-full flex flex-col justify-between items-center py-4 sm:py-6 md:py-8 lg:py-10 px-4 sm:px-6 md:px-8 lg:px-12">
         
         <Header location={location} />
 
         <MoodSync selectedVibe={selectedVibe} onSelectVibe={setSelectedVibe} />
 
-        <div className="relative w-full flex-1 flex flex-col items-center justify-center">
+        <div className="relative w-full flex-1 flex flex-col items-center justify-center pb-20 md:pb-0">
             <Carousel 
                 places={places} 
                 currentIndex={currentIndex} 
@@ -74,7 +75,7 @@ const App = () => {
             />
             
             {/* Controls Overlay - Positioned to be integrated with the cards */}
-            <div className="absolute bottom-10 z-40">
+            <div className="absolute bottom-20 md:bottom-10 z-40">
                 <Controls 
                     currentIndex={currentIndex} 
                     total={places.length} 
@@ -88,11 +89,22 @@ const App = () => {
       </main>
 
       {/* Sidebars */}
-      <SideBar />
+      <SideBar 
+        currentPlace={currentPlace} 
+        favorites={favorites} 
+        onToggleFavorite={(placeId) => {
+          setFavorites(prev => 
+            prev.includes(placeId) 
+              ? prev.filter(id => id !== placeId)
+              : [...prev, placeId]
+          );
+        }}
+      />
 
-      <div className="fixed bottom-10 right-10 z-50 animate-fade-in delay-500">
-        <button className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:scale-110 active:scale-95 transition-all cursor-pointer">
-          <Plus size={28} />
+      <div className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10 z-50 animate-fade-in delay-500">
+        <button className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-white text-black flex items-center justify-center shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:scale-110 active:scale-95 transition-all cursor-pointer">
+          <Plus size={20} className="sm:block hidden" />
+          <Plus size={24} className="sm:hidden" />
         </button>
       </div>
 

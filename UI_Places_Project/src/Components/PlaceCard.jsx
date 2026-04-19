@@ -1,9 +1,33 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
 
 const PlaceCard = ({ place, isActive }) => {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (cardRef.current && isActive) {
+      // Apply floating animation to active cards
+      gsap.to(cardRef.current, {
+        y: 20,
+        repeat: -1,
+        yoyo: true,
+        duration: 2,
+        ease: "power1.inOut"
+      });
+    }
+    
+    return () => {
+      // Clean up animation when component unmounts or card becomes inactive
+      if (cardRef.current) {
+        gsap.killTweensOf(cardRef.current);
+      }
+    };
+  }, [isActive]);
+
   return (
     // ✅ OUTER WRAPPER (NO overflow, NO rounding)
     <div
+      ref={cardRef}
       className={`relative w-[340px] md:w-[420px] h-[580px]  group transition-all duration-700 z-30
         ${isActive
           ? "scale-100 opacity-100"
